@@ -23,7 +23,7 @@ jobs:
       # Step 2: Clone Repo A into a subdirectory of Repo B
       - name: Clone Repo A into Repo B
         run: |
-          git clone https://github.com/Kavindutharaka/a.git sub_a # Clone Repo A into a subdirectory named sub_a
+          git clone https://github.com/Kavindutharaka/a sub_a # Clone Repo A into a subdirectory named sub_a
           mv sub_a/* ./sub # Move Repo A contents into the root of Repo B
           rm -rf sub_a # Remove the now-empty subdirectory
 
