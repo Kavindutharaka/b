@@ -30,7 +30,6 @@ jobs:
           git clone https://github.com/Kavindutharaka/a.git sub_a # Clone Repo A into a subdirectory named sub_a
           mv sub_a/* . # Move Repo A contents into the root of Repo B
           rm -rf sub_a # Remove the now-empty subdirectory
-
       - name: Commit changes
         run: |
           git config --global user.name "Kavindutharaka"
