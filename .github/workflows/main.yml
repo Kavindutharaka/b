@@ -14,16 +14,17 @@ jobs:
       - name: Checkout Repo B
         uses: actions/checkout@v3
         with:
-          repository: Kavindutharaka/b # Replace with repo B's path
+          repository: Kavindutharaka/b # Replace with Repo B's path
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
-          ref: master
+          ref: master # Checkout the master branch of Repo B
 
       - name: Verify Repository Access
         run: |
           git remote -v
           git branch -a
           git fetch --all
-          
+        continue-on-error: true # Continue even if this step fails
+
       - name: Clone Repo A into Repo B
         run: |
           git clone https://github.com/Kavindutharaka/a.git sub_a # Clone Repo A into a subdirectory named sub_a
@@ -38,4 +39,4 @@ jobs:
           git commit -m "Sync changes from Repo A" || echo "No changes to commit"
           git push origin master
         env:
-          GITHUB_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }} # Use the GITHUB_TOKEN environment variable for authentication
