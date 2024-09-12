@@ -1,23 +1,30 @@
 name: Sync Repo A into Repo B
 
 on:
-  workflow_dispatch: # Manual trigger
+  # Manual trigger for testing or manual syncs
+  workflow_dispatch:
+
+  # Daily scheduled sync at 2 AM UTC
   schedule: 
-    - cron: '0 2 * * *' # Run daily at 2 AM UTC
-  repository_dispatch: # Trigger when new changes are pushed to repo A
+    - cron: '0 2 * * *'
+
+  # Event triggered when Repo A sends a repository dispatch event
+  repository_dispatch:
 
 jobs:
   sync_repos:
     runs-on: ubuntu-latest
     
     steps:
+      # Step 1: Checkout Repo B
       - name: Checkout Repo B
         uses: actions/checkout@v3
         with:
-          repository: Kavindutharaka/b # Replace with Repo B's path
+          repository: Kavindutharaka/b
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
           ref: master # Checkout the master branch of Repo B
 
+      # Step 2: Verify Repository Access (optional)
       - name: Verify Repository Access
         run: |
           git remote -v
@@ -25,11 +32,14 @@ jobs:
           git fetch --all
         continue-on-error: true # Continue even if this step fails
 
+      # Step 3: Clone Repo A into Repo B
       - name: Clone Repo A into Repo B
         run: |
-          git clone https://github.com/Kavindutharaka/a.git sub_a # Clone Repo A into a subdirectory named sub_a
-          mv sub_a/* . # Move Repo A contents into the root of Repo B
+          git clone https://github.com/Kavindutharaka/a.git sub_a # Clone Repo A into a subdirectory
+          mv sub_a/* ./sub/ # Move Repo A contents into the root of Repo B
           rm -rf sub_a # Remove the now-empty subdirectory
+
+      # Step 4: Commit and push changes to Repo B
       - name: Commit changes
         run: |
           git config --global user.name "Kavindutharaka"
@@ -38,4 +48,4 @@ jobs:
           git commit -m "Sync changes from Repo A" || echo "No changes to commit"
           git push origin master
         env:
-          GITHUB_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }} # Use the GITHUB_TOKEN environment variable for authentication
+          GITHUB_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }} # Use the GitHub token to authenticate
