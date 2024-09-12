@@ -1,0 +1,39 @@
+name: Sync Repo A into Repo B
+
+on:
+  # Trigger the workflow manually, on a schedule, or when repo A has new changes
+  workflow_dispatch: # Manual trigger
+  schedule: 
+    - cron: '0 2 * * *' # Run daily at 2 AM UTC
+  repository_dispatch: # Trigger when new changes are pushed to repo A
+
+jobs:
+  sync_repos:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Step 1: Checkout Repo B
+      - name: Checkout Repo B
+        uses: actions/checkout@v3
+        with:
+          repository: Kavindutharaka/b # Replace with repo B's path
+          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+          ref: main # The branch of repo B to clone into
+
+      # Step 2: Clone Repo A into a subdirectory of Repo B
+      - name: Clone Repo A into Repo B
+        run: |
+          git clone https://github.com/Kavindutharaka/a.git sub_a # Clone Repo A into a subdirectory named sub_a
+          mv sub_a/* ./sub # Move Repo A contents into the root of Repo B
+          rm -rf sub_a # Remove the now-empty subdirectory
+
+      # Step 3: Commit and push changes to Repo B
+      - name: Commit changes
+        run: |
+          git config --global user.name "Kavindutharaka"
+          git config --global user.email "ktliyanapathirana2000@gmail.com"
+          git add .
+          git commit -m "Sync changes from Repo A"
+          git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }} # Use the GITHUB_TOKEN environment variable for authentication
