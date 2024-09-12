@@ -16,7 +16,7 @@ jobs:
         with:
           repository: Kavindutharaka/b # Replace with repo B's path
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
-          ref: main
+          ref: master
 
       - name: Verify Repository Access
         run: |
