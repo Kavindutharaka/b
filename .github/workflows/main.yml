@@ -36,8 +36,10 @@ jobs:
       - name: Clone Repo A into Repo B
         run: |
           git clone https://github.com/Kavindutharaka/a.git sub_a # Clone Repo A into a subdirectory
-          mv sub_a/* ./sub/ # Move Repo A contents into the root of Repo B
+          mkdir -p ./sub/ # Ensure the target subfolder exists in Repo B
+          mv sub_a/* ./sub/ # Move Repo A contents into the 'sub' folder in Repo B
           rm -rf sub_a # Remove the now-empty subdirectory
+
 
       # Step 4: Commit and push changes to Repo B
       - name: Commit changes
